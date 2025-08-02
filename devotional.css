@@ -33,7 +33,7 @@ body {
 }
 
 .ganesha-img {
-    width: 300px;
+    width: 150px;
     height: auto;
     margin-bottom: 1.5rem;
     border-radius: 15px;
@@ -93,4 +93,5 @@ body {
         padding: 0.7rem 1.2rem;
     }
 }
+
 
