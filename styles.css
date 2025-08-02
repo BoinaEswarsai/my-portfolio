@@ -1,4 +1,3 @@
-
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
@@ -456,7 +455,7 @@ footer {
     .slide-text { font-size: 3rem; }
     .slide-subtext, .slide-info { font-size: 1.4rem; }
     .profile-img { width: 200px; height: 200px; }
-    .navbar ul { gap: 1rem; flex-direction: column; }
+    .navbar ul { gap: 1rem; flex-direction: row; } /* Changed to row for horizontal layout */
     .nav-link { font-size: 1rem; }
     .skills-grid, .interests-grid { gap: 1.2rem; }
     .skill-item, .interest-item { padding: 1.5rem; font-size: 1.1rem; }
