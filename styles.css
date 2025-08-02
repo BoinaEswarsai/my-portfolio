@@ -488,52 +488,60 @@ label.cta-button {
     cursor: pointer;
 }
  /* Navbar scroll styles */
+/* Scrollable navbar wrapper */
 .scrollable-navbar {
-    overflow-x: auto;
-    white-space: nowrap;
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 10px 0;
-    position: sticky; /* Keep it fixed at top */
-    top: 0;
-    z-index: 999;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* List becomes horizontal scrollable */
+.scroll-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+
 .navbar-list {
-    display: inline-flex;
-    gap: 16px;
-    padding: 0 16px;
-    margin: 0;
-    list-style: none;
+  display: flex;
+  flex-wrap: nowrap;
+  margin: 0;
+  padding: 10px 16px;
+  list-style: none;
 }
 
-/* Each item stays in a line */
 .navbar-list li {
-    flex-shrink: 0;
+  flex: 0 0 auto;
 }
 
-/* Nav links */
-.navbar-list .nav-link {
-    display: inline-block;
-    color: white;
-    font-weight: 600;
-    text-decoration: none;
-    padding: 10px 14px;
-    border-radius: 6px;
-    transition: background-color 0.3s ease;
-    white-space: nowrap;
+.nav-link {
+  display: inline-block;
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+  white-space: nowrap;
 }
 
-.navbar-list .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Hide scrollbar for aesthetics */
-.scrollable-navbar::-webkit-scrollbar {
-    display: none;
+/* Hide scrollbars for a cleaner look */
+.scroll-wrapper::-webkit-scrollbar {
+  display: none;
 }
-.scrollable-navbar {
-    -ms-overflow-style: none;  /* Edge */
+.scroll-wrapper {
+  -ms-overflow-style: none; /* IE */
+  scrollbar-width: none;    /* Firefox */
+}
+
     scrollbar-width: none;     /* Firefox */
 }
+
 
