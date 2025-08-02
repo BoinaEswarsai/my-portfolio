@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"></script>
+</head>
+<body>
+    <div id="particles-js"></div>
+
+    <nav class="navbar">
+        <ul>
+            <li><a href="#intro" class="nav-link">Home</a></li>
+            <li><a href="#about" class="nav-link">About</a></li>
+            <li><a href="#skills" class="nav-link">Skills</a></li>
+            <li><a href="#projects" class="nav-link">Projects</a></li>
+            <li><a href="#interests" class="nav-link">Interests</a></li>
+            <li><a href="#contact" class="nav-link">Contact</a></li>
+            <li><a href="#" class="nav-link" id="edit-toggle">Edit</a></li>
+        </ul>
+    </nav>
+
+    <section id="intro" class="slide" data-bg="rgba(255, 111, 97, 0.8)">
+        <div class="slide-content">
+            <h1 class="slide-text">Welcome to My World</h1>
+            <p class="slide-subtext">I'm Eswarsai, a Creative Web Developer</p>
+            <button class="cta-button">Explore Now</button>
+        </div>
+    </section>
+
+    <section id="about" class="slide" data-bg="rgba(110, 142, 251, 0.8)">
+        <div class="slide-content">
+            <h2 class="slide-text">About Me</h2>
+            <img src="https://via.placeholder.com/200" alt="Profile" id="profile-img" class="profile-img editable" data-key="profileImage">
+            <p class="slide-info"></p>
+            <a href="#" id="resume-link" class="resume-button editable" data-key="resumeLink">Download Resume</a>
+            <input type="file" id="profile-image-upload" accept="image/*">
+            <input type="file" id="resume-upload" accept="application/pdf">
+        </div>
+    </section>
+
+    <section id="skills" class="slide" data-bg="rgba(167, 119, 227, 0.8)">
+        <div class="slide-content">
+            <h2 class="slide-text">My Skills</h2>
+            <div class="skills-grid"></div>
+            <button class="add-item cta-button" data-section="skills">Add Skill</button>
+        </div>
+    </section>
+
+    <section id="projects" class="slide" data-bg="rgba(255, 179, 71, 0.8)">
+        <div class="slide-content">
+            <h2 class="slide-text">My Projects</h2>
+            <div class="project-grid"></div>
+            <button class="add-item cta-button" data-section="projects">Add Project</button>
+            <input type="file" id="project-image-upload" accept="image/*">
+        </div>
+    </section>
+
+    <section id="interests" class="slide" data-bg="rgba(255, 71, 87, 0.8)">
+        <div class="slide-content">
+            <h2 class="slide-text">Interests & Hobbies</h2>
+            <div class="interests-grid"></div>
+            <button class="add-item cta-button" data-section="interests">Add Interest</button>
+        </div>
+    </section>
+
+    <section id="contact" class="slide" data-bg="rgba(46, 204, 113, 0.8)">
+        <div class="slide-content">
+            <h2 class="slide-text">Contact Me</h2>
+            <form class="contact-form">
+                <input type="text" id="name" placeholder="Your Name" required>
+                <input type="email" id="email" placeholder="Your Email" required>
+                <textarea id="message" placeholder="Your Message" required></textarea>
+                <button type="button" class="cta-button" onclick="sendMessage()">Send Message</button>
+            </form>
+            <div class="social-links"></div>
+        </div>
+    </section>
+
+    <footer></footer>
+
+    <div id="password-prompt">
+        <div class="prompt-content">
+            <h2>Set Your Password</h2>
+            <input type="password" id="new-password" placeholder="New Password">
+            <input type="password" id="confirm-password" placeholder="Confirm Password">
+            <div id="password-error" style="color: red; display: none;"></div>
+            <button onclick="setPassword()">Set Password</button>
+        </div>
+    </div>
+
+    <div id="admin-panel">
+        <div class="admin-content">
+            <h2>Admin Panel</h2>
+            <input type="password" id="admin-password" placeholder="Enter Password">
+            <div id="admin-error" style="color: red; display: none;"></div>
+            <button onclick="authenticateAdmin()">Login</button>
+            <div id="admin-controls" style="display: none;">
+                <h3>Edit Configuration</h3>
+                <form id="config-form">
+                    <label>Name:</label>
+                    <input type="text" id="config-name">
+                    <label>Location:</label>
+                    <input type="text" id="config-location">
+                    <label>Email:</label>
+                    <input type="email" id="config-email">
+                    <label>Phone:</label>
+                    <input type="tel" id="config-phone">
+                    <label>LinkedIn:</label>
+                    <input type="url" id="config-linkedin">
+                    <label>GitHub:</label>
+                    <input type="url" id="config-github">
+                    <label>Profile Image:</label>
+                    <input type="url" id="config-profileImage">
+                    <input type="file" id="config-profileImage-upload" accept="image/*">
+                    <label>About:</label>
+                    <textarea id="config-about"></textarea>
+                    <label>Welcome Message:</label>
+                    <textarea id="config-welcome"></textarea>
+                    <h4>Skills</h4>
+                    <div id="config-skills"></div>
+                    <button type="button" class="add-item cta-button" data-section="skills">Add Skill</button>
+                    <h4>Projects</h4>
+                    <div id="config-projects"></div>
+                    <button type="button" class="add-item cta-button" data-section="projects">Add Project</button>
+                    <h4>Interests</h4>
+                    <div id="config-interests"></div>
+                    <button type="button" class="add-item cta-button" data-section="interests">Add Interest</button>
+                </form>
+                <div id="json-error" style="color: red; display: none;"></div>
+                <button onclick="saveConfig()">Save Changes</button>
+                <button onclick="closeAdminPanel()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-panel">
+        <div class="prompt-content">
+            <h2>Edit Content</h2>
+            <div id="edit-content"></div>
+            <div id="edit-error" style="color: red; display: none;"></div>
+            <button onclick="saveEdit()">Save Edit</button>
+            <button onclick="closeEditPanel()">Cancel</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

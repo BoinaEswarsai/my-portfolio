@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devotional Welcome</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&family=Satisfy&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="devotional.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="devotional-container">
+        <img src="gsh.png" alt="Lord Ganesha" class="ganesha-img">
+        <h1 class="devotional-text">Om Ganeshaya Namah</h1>
+        <p class="devotional-quote">“May Lord Ganesha remove all obstacles and pave the way for success.”</p>
+        <a href="home.html" class="cta-button">Portfolio</a>
+    </div>
+    <script>
+        // Initialize particles.js for diya-like floating particles
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 200, density: { enable: true, value_area: 800 } },
+                color: { value: ['#ffcc00', '#ff9900', '#ff6600'] },
+                shape: { type: 'circle' },
+                opacity: { value: 0.7, random: true },
+                size: { value: 10, random: true },
+                line_linked: { enable: false },
+                move: { enable: true, speed: 0.5, direction: 'none', random: true, out_mode: 'out' }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' } },
+                modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 3 } }
+            },
+            retina_detect: true
+        });
+
+        // GSAP animations
+        gsap.from('.ganesha-img', { 
+            opacity: 0, 
+            scale: 0.8, 
+            duration: 2, 
+            ease: 'elastic.out(1, 0.3)', 
+            delay: 0.5 
+        });
+        gsap.from('.devotional-text', { 
+            opacity: 0, 
+            y: -50, 
+            duration: 1.5, 
+            ease: 'power3.out', 
+            delay: 1 
+        });
+        gsap.from('.devotional-quote', { 
+            opacity: 0, 
+            y: 50, 
+            duration: 1.5, 
+            ease: 'power3.out', 
+            delay: 1.2 
+        });
+        gsap.from('.cta-button', { 
+            opacity: 0, 
+            scale: 0.5, 
+            duration: 1.5, 
+            ease: 'back.out(1.7)', 
+            delay: 1.5,
+            repeat: -1, 
+            repeatDelay: 1, 
+            yoyo: true 
+        });
+
+
+        
+    </script>
+</body>
+</html>
