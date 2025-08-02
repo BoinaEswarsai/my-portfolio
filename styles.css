@@ -487,43 +487,53 @@ label.cta-button {
     display: inline-block;
     cursor: pointer;
 }
+ /* Navbar scroll styles */
 .scrollable-navbar {
     overflow-x: auto;
     white-space: nowrap;
+    background-color: rgba(0, 0, 0, 0.7);
     padding: 10px 0;
-    background-color: rgba(0, 0, 0, 0.7); /* or your original navbar color */
+    position: sticky; /* Keep it fixed at top */
+    top: 0;
+    z-index: 999;
 }
 
+/* List becomes horizontal scrollable */
 .navbar-list {
     display: inline-flex;
-    gap: 20px;
-    padding: 0 20px;
-    list-style: none;
+    gap: 16px;
+    padding: 0 16px;
     margin: 0;
+    list-style: none;
 }
 
+/* Each item stays in a line */
 .navbar-list li {
-    display: inline-block;
+    flex-shrink: 0;
 }
 
-.navbar-list a {
-    text-decoration: none;
+/* Nav links */
+.navbar-list .nav-link {
+    display: inline-block;
     color: white;
     font-weight: 600;
-    padding: 8px 12px;
+    text-decoration: none;
+    padding: 10px 14px;
     border-radius: 6px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
 }
 
-.navbar-list a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+.navbar-list .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Optional: Hide scrollbar for clean look */
+/* Hide scrollbar for aesthetics */
 .scrollable-navbar::-webkit-scrollbar {
     display: none;
 }
 .scrollable-navbar {
-    -ms-overflow-style: none;  /* IE/Edge */
+    -ms-overflow-style: none;  /* Edge */
     scrollbar-width: none;     /* Firefox */
 }
+
