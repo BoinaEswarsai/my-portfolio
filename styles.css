@@ -487,3 +487,43 @@ label.cta-button {
     display: inline-block;
     cursor: pointer;
 }
+.scrollable-navbar {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 10px 0;
+    background-color: rgba(0, 0, 0, 0.7); /* or your original navbar color */
+}
+
+.navbar-list {
+    display: inline-flex;
+    gap: 20px;
+    padding: 0 20px;
+    list-style: none;
+    margin: 0;
+}
+
+.navbar-list li {
+    display: inline-block;
+}
+
+.navbar-list a {
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+}
+
+.navbar-list a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Optional: Hide scrollbar for clean look */
+.scrollable-navbar::-webkit-scrollbar {
+    display: none;
+}
+.scrollable-navbar {
+    -ms-overflow-style: none;  /* IE/Edge */
+    scrollbar-width: none;     /* Firefox */
+}
