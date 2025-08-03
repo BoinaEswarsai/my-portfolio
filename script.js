@@ -1,7 +1,6 @@
-
 gsap.registerPlugin(ScrollTrigger);
 
-let config = { skills: [], projects: [], interests: [] }; // Initialize arrays to prevent undefined errors
+let config = { skills: [], projects: [], interests: [], resumeLink: null, resumeFileName: null }; // Initialize arrays and resume fields
 let isEditMode = false;
 let adminPassword = localStorage.getItem('adminPassword');
 let pendingEdit = { element: null, key: null, value: null, index: null, field: null, imageFile: null };
@@ -57,13 +56,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('project-image-upload').addEventListener('change', handleFileUpload);
     document.getElementById('profile-image-upload').addEventListener('change', handleFileUpload);
     document.getElementById('config-profileImage-upload').addEventListener('change', handleFileUpload);
+    document.getElementById('config-resume-upload').addEventListener('change', handleFileUpload);
 });
 
 async function fetchConfig() {
     try {
         const response = await axios.get('config.json');
-        config = { ...response.data, skills: response.data.skills || [], projects: response.data.projects || [], interests: response.data.interests || [] };
-        localStorage.setItem('portfolioConfig', JSON.stringify(config)); // Save to localStorage
+        config = { ...response.data, skills: response.data.skills || [], projects: response.data.projects || [], interests: response.data.interests || [], resumeLink: response.data.resumeLink || null, resumeFileName: response.data.resumeFileName || null };
+        localStorage.setItem('portfolioConfig', JSON.stringify(config));
         updateContent();
         updateConfigForm();
         setupAnimations();
@@ -82,8 +82,9 @@ function updateContent() {
     document.querySelector('.slide-subtext').textContent = `I'm ${config.name || 'Your Name'}, a Creative Web Developer`;
     document.querySelector('#profile-img').src = config.profileImage || 'https://via.placeholder.com/200';
     document.querySelector('.slide-info').textContent = config.about || '';
-    document.querySelector('#resume-link').href = config.resumeLink || '#';
-    document.querySelector('#resume-link').setAttribute('download', config.resumeLink ? 'resume.pdf' : '');
+    const resumeLink = document.querySelector('#resume-link');
+    resumeLink.href = config.resumeLink || '#';
+    resumeLink.setAttribute('download', config.resumeFileName || 'resume.pdf');
     document.querySelector('footer').innerHTML = `<p>&copy; 2025 ${config.name || 'Your Name'}. All rights reserved.</p>`;
 
     const skillsGrid = document.querySelector('.skills-grid');
@@ -155,6 +156,7 @@ function updateConfigForm() {
     document.getElementById('config-profileImage').value = config.profileImage || '';
     document.getElementById('config-about').value = config.about || '';
     document.getElementById('config-welcome').value = config.welcome || '';
+    document.getElementById('config-resume-current').textContent = config.resumeFileName || 'No file selected';
 
     const skillsContainer = document.getElementById('config-skills');
     skillsContainer.innerHTML = '';
@@ -188,7 +190,6 @@ function updateConfigForm() {
         projectsContainer.appendChild(projectDiv);
     });
 
-    // Add event listeners to file inputs in the admin panel
     projectsContainer.querySelectorAll('input[type="file"][data-section="projects"]').forEach(input => {
         input.addEventListener('change', (e) => {
             const index = parseInt(e.target.dataset.index);
@@ -196,14 +197,14 @@ function updateConfigForm() {
             if (file) {
                 if (!file.type.startsWith('image/')) {
                     alert('Please upload an image file.');
-                    e.target.value = ''; // Reset file input
+                    e.target.value = '';
                     return;
                 }
                 const fileURL = URL.createObjectURL(file);
                 config.projects[index] = { ...config.projects[index], image: fileURL };
                 localStorage.setItem('portfolioConfig', JSON.stringify(config));
-                updateContent(); // Update project grid to show new image
-                updateConfigForm(); // Refresh form to show new image URL
+                updateContent();
+                updateConfigForm();
                 alert('Image selected successfully! Note: This is a temporary URL. Upload to a server for a permanent link.');
             }
         });
@@ -272,7 +273,7 @@ function setupInlineEditing() {
 
 function saveEdit() {
     const errorDiv = document.getElementById('edit-error');
-    errorDiv.style.display = 'none'; // Reset error display
+    errorDiv.style.display = 'none';
 
     if (pendingEdit.key === 'skills' || pendingEdit.key === 'interests') {
         const newValue = document.getElementById('edit-value').value;
@@ -300,7 +301,7 @@ function saveEdit() {
                 updateContent();
                 updateConfigForm();
                 document.getElementById('project-image-upload').dataset.targetKey = `projects[${config.projects.length - 1}].image`;
-                document.getElementById('project-image-upload').value = ''; // Reset file input
+                document.getElementById('project-image-upload').value = '';
                 if (!imageFile) {
                     document.getElementById('project-image-upload').click();
                 }
@@ -373,11 +374,12 @@ function handleFileUpload(e) {
     const key = e.target.id === 'resume-upload' ? 'resumeLink' : 
                 e.target.id === 'profile-image-upload' ? 'profileImage' : 
                 e.target.id === 'config-profileImage-upload' ? 'profileImage' : 
+                e.target.id === 'config-resume-upload' ? 'resumeLink' : 
                 e.target.id === 'edit-project-image' ? pendingEdit.key : 
                 e.target.dataset.targetKey;
 
     // Validate file type
-    if (e.target.id === 'resume-upload' && file.type !== 'application/pdf') {
+    if ((e.target.id === 'resume-upload' || e.target.id === 'config-resume-upload') && file.type !== 'application/pdf') {
         alert('Please upload a PDF file for resume.');
         return;
     }
@@ -388,25 +390,28 @@ function handleFileUpload(e) {
 
     const fileURL = URL.createObjectURL(file);
     try {
-        updateConfig(key, fileURL);
-
-        // Update the UI immediately for project images
-        if (key.includes('projects[')) {
-            const imgElement = document.querySelector(`img[data-key="${key}"]`);
-            if (imgElement) {
-                imgElement.src = fileURL;
-            } else {
-                console.warn(`Image element for key "${key}" not found. Re-rendering project grid.`);
-                updateContent(); // Re-render to ensure the new image appears
-            }
-        } else if (key === 'profileImage') {
-            const profileImg = document.querySelector(`[data-key="${key}"]`);
-            if (profileImg) profileImg.src = fileURL;
-        } else if (key === 'resumeLink') {
+        if (key === 'resumeLink') {
+            config.resumeFileName = file.name;
+            updateConfig(key, fileURL);
             const resumeLink = document.getElementById('resume-link');
             if (resumeLink) {
                 resumeLink.href = fileURL;
                 resumeLink.setAttribute('download', file.name);
+            }
+            document.getElementById('config-resume-current').textContent = file.name;
+        } else {
+            updateConfig(key, fileURL);
+            if (key.includes('projects[')) {
+                const imgElement = document.querySelector(`img[data-key="${key}"]`);
+                if (imgElement) {
+                    imgElement.src = fileURL;
+                } else {
+                    console.warn(`Image element for key "${key}" not found. Re-rendering project grid.`);
+                    updateContent();
+                }
+            } else if (key === 'profileImage') {
+                const profileImg = document.querySelector(`[data-key="${key}"]`);
+                if (profileImg) profileImg.src = fileURL;
             }
         }
 
@@ -518,6 +523,7 @@ function toggleEditMode() {
         document.getElementById('project-image-upload').style.display = 'none';
         document.getElementById('profile-image-upload').style.display = 'none';
         document.getElementById('config-profileImage-upload').style.display = 'none';
+        document.getElementById('config-resume-upload').style.display = 'none';
         document.getElementById('admin-panel').classList.remove('show');
         document.getElementById('admin-panel').style.display = 'none';
         closeEditPanel();
@@ -538,6 +544,7 @@ function authenticateAdmin() {
         document.getElementById('project-image-upload').style.display = 'block';
         document.getElementById('profile-image-upload').style.display = 'block';
         document.getElementById('config-profileImage-upload').style.display = 'block';
+        document.getElementById('config-resume-upload').style.display = 'block';
         updateConfigForm();
         document.getElementById('admin-error').style.display = 'none';
     } else {
@@ -562,7 +569,8 @@ function saveConfig() {
             skills: [],
             projects: [],
             interests: [],
-            resumeLink: config.resumeLink
+            resumeLink: config.resumeLink,
+            resumeFileName: config.resumeFileName
         };
 
         document.querySelectorAll('#config-skills input').forEach(input => {
@@ -574,7 +582,7 @@ function saveConfig() {
             const title = projectDiv.querySelector(`input[data-index="${index}"][data-field="title"]`).value;
             const description = projectDiv.querySelector(`textarea[data-index="${index}"][data-field="description"]`).value;
             const imageInput = projectDiv.querySelector(`input[data-index="${index}"][data-field="image"]`);
-            const image = config.projects[index]?.image || 'https://via.placeholder.com/400x250'; // Retain existing image if no new file
+            const image = config.projects[index]?.image || 'https://via.placeholder.com/400x250';
             const link = projectDiv.querySelector(`input[data-index="${index}"][data-field="link"]`).value;
             if (title && description) {
                 newConfig.projects.push({ title, description, image, link });
@@ -589,7 +597,6 @@ function saveConfig() {
             throw new Error('Missing required fields.');
         }
         try {
-            // Skip validation for blob URLs and placeholder
             if (newConfig.profileImage && newConfig.profileImage !== '#' && !newConfig.profileImage.startsWith('blob:') && newConfig.profileImage !== 'https://via.placeholder.com/200') new URL(newConfig.profileImage);
             if (newConfig.linkedin && newConfig.linkedin !== '#' && !newConfig.linkedin.startsWith('blob:')) new URL(newConfig.linkedin);
             if (newConfig.github && newConfig.github !== '#' && !newConfig.github.startsWith('blob:')) new URL(newConfig.github);
@@ -636,6 +643,7 @@ function closeAdminPanel() {
     document.getElementById('project-image-upload').style.display = 'none';
     document.getElementById('profile-image-upload').style.display = 'none';
     document.getElementById('config-profileImage-upload').style.display = 'none';
+    document.getElementById('config-resume-upload').style.display = 'none';
     closeEditPanel();
 }
 
